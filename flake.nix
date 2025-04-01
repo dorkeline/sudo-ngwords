@@ -31,6 +31,12 @@
         });
       };
 
+      flake.nixosModules.default = {pkgs, ...}: {
+        nixpkgs.overlays = [self.nixosModules.default];
+
+        security.sudo.package = pkgs.sudo-nx-ngwords;
+      };
+
       perSystem = {pkgs, ...}: {
         packages = let
           myPkgs = self.overlays.default pkgs pkgs;
