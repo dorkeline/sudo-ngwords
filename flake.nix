@@ -15,7 +15,7 @@
       systems = import inputs.systems;
 
       flake.overlays.default = final: prev: {
-        sudo-nx-ngwords = prev.sudo.overrideAttrs (old: {
+        sudo-nx-ngwords = final.sudo.overrideAttrs (old: {
           configureFlags =
             (old.configureFlags or [])
             ++ [
@@ -32,16 +32,16 @@
       };
 
       flake.nixosModules.default = {pkgs, ...}: {
-        nixpkgs.overlays = [self.nixosModules.default];
+        nixpkgs.overlays = [self.overlays.default];
 
         security.sudo.package = pkgs.sudo-nx-ngwords;
       };
 
       perSystem = {pkgs, ...}: {
         packages = let
-          myPkgs = self.overlays.default myPkgs pkgs;
+          pkgs' = self.overlays.default pkgs pkgs;
         in
-          myPkgs // {default = myPkgs.sudo-nx-ngwords;};
+          pkgs' // {default = pkgs'.sudo-nx-ngwords;};
 
         formatter = pkgs.alejandra;
       };
