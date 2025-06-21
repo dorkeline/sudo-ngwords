@@ -17,7 +17,7 @@
       flake.overlays.default = final: prev: {
         sudo-nx-ngwords = prev.sudo.overrideAttrs (old: {
           configureFlags =
-            old.configureFlags
+            (old.configureFlags or [])
             ++ [
               "--with-insults"
               "--with-goons-insults"
@@ -39,7 +39,7 @@
 
       perSystem = {pkgs, ...}: {
         packages = let
-          myPkgs = self.overlays.default pkgs pkgs;
+          myPkgs = self.overlays.default myPkgs pkgs;
         in
           myPkgs // {default = myPkgs.sudo-nx-ngwords;};
 
